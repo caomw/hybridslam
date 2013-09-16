@@ -1,0 +1,12 @@
+## p2os_driver parameters ##
+#
+# port: connection port to the microcontroller (string, default="/dev/ttyS0")
+# pulse: frequency of checking commands and disabling motors (float32, to mute beep set to 1.0)
+# use_sonar: turn on sonar (bool, default=false)
+
+port:      /dev/ttyS0
+pulse:     1
+use_sonar: false
+
+
+

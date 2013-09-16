@@ -1,0 +1,12 @@
+<launch>  
+
+    <!-- Configure this launch file for your hardware setup  -->
+    <include file="$(find hybridslam)/launch/hardware/robot/p2os.launch" />
+
+    <!-- Configure this launch file for your controller setup  -->
+    <include file="$(find hybridslam)/launch/control/joystick.launch" />
+
+</launch>
+
+
+

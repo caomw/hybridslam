@@ -11,3 +11,6 @@
 *.lai
 *.la
 *.a
+
+# Bag files and datasets
+/data/rgbd_dataset/datasets/*

@@ -1,0 +1,18 @@
+<launch>
+
+    <!--------------------------------- Arguments --------------------------------->
+    
+    <arg name="disable_logging"  />
+    <arg name="record_unibrain_camera" />
+
+    <!---------------------------------   Nodes   --------------------------------->
+
+    <!---------------------------------  Logging  --------------------------------->
+
+    <group if="$(arg record_unibrain_camera)">
+        <node pkg="rosbag" type="record" name="rosbag_record_unibrain_camera"
+             args="-o /tmp/hybridslam-unibrain-camera ???"
+             unless="$(arg disable_logging)" />
+    </group>
+
+</launch>

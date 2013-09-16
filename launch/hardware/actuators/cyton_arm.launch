@@ -1,0 +1,18 @@
+<launch>
+
+    <!--------------------------------- Arguments --------------------------------->
+    
+    <arg name="disable_logging"  />
+    <arg name="record_cyton_arm" />
+
+    <!---------------------------------   Nodes   --------------------------------->
+
+    <!---------------------------------  Logging  --------------------------------->
+
+    <group if="$(arg record_cyton_arm)">
+        <node pkg="rosbag" type="record" name="rosbag_record_cyton_arm"
+             args="-o /tmp/hybridslam-cyton-arm ???"
+             unless="$(arg disable_logging)" />
+    </group>
+
+</launch>

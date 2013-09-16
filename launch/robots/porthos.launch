@@ -1,0 +1,27 @@
+<launch>
+
+    <!--------------------------------- Arguments --------------------------------->
+    
+    <arg name="disable_logging"            />
+    <arg name="record_pioneer"             />
+    <arg name="record_cyton_arm"           />
+    <arg name="record_mobileranger_stereo" />
+
+    <!--------------------------------- Launch Files --------------------------------->
+
+    <include file="$(find hybridslam)/launch/hardware/core/pioneer.launch">
+        <arg name="disable_logging"            value="$(arg disable_logging)"            />
+        <arg name="record_pioneer"             value="$(arg record_pioneer)"             />
+    </include>
+
+    <include file="$(find hybridslam)/launch/hardware/actuators/cyton_arm.launch">
+        <arg name="disable_logging"            value="$(arg disable_logging)"            />
+        <arg name="record_cyton_arm"           value="$(arg record_cyton_arm)"           />
+    </include>
+
+    <include file="$(find hybridslam)/launch/hardware/sensors/mobileranger_stereo.launch">
+        <arg name="disable_logging"            value="$(arg disable_logging)"            />
+        <arg name="record_mobileranger_stereo" value="$(arg record_mobileranger_stereo)" />
+    </include>
+
+</launch>

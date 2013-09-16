@@ -1,0 +1,18 @@
+<launch>
+
+    <!--------------------------------- Arguments --------------------------------->
+    
+    <arg name="disable_logging"  />
+    <arg name="record_mobileranger_stereo" />
+
+    <!---------------------------------   Nodes   --------------------------------->
+
+    <!---------------------------------  Logging  --------------------------------->
+
+    <group if="$(arg record_mobileranger_stereo)">
+        <node pkg="rosbag" type="record" name="rosbag_record_mobileranger_stereo"
+             args="-o /tmp/hybridslam-mobileranger-stereo ???"
+             unless="$(arg disable_logging)" />
+    </group>
+
+</launch>

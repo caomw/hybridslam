@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- Generic joystick driver -->
+    <node pkg="joy" type="joy_node" name="joystick" />
+
+    <!-- Converts joystick commands into robot velocities -->
+    <node pkg="p2os_teleop" type="p2os_teleop" name="teleoperation" />
+
+</launch>

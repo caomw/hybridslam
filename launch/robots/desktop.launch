@@ -1,0 +1,15 @@
+<launch>
+
+    <!--------------------------------- Arguments --------------------------------->
+
+    <arg name="disable_logging" />
+    <arg name="record_kinect"   />
+
+    <!--------------------------------- Launch Files --------------------------------->
+
+    <include file="$(find hybridslam)/launch/hardware/sensors/kinect.launch">
+        <arg name="disable_logging" value="$(arg disable_logging)" />
+        <arg name="record_kinect"   value="$(arg record_kinect)"   />
+    </include>
+
+</launch>

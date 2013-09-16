@@ -1,0 +1,12 @@
+mappings: [
+            {old: /odom,                        new: /odom},
+            {old: /base_link,                   new: /base_link},
+            {old: /laser,                       new: /laser},
+            {old: /world,                       new: /world},
+            {old: /kinect,                      new: /kinect},
+            {old: /openni_camera,               new: /openni_camera},
+            {old: /openni_rgb_frame,            new: /openni_rgb_frame},
+            {old: /openni_rgb_optical_frame,    new: /openni_rgb_optical_frame},
+            {old: /openni_depth_frame,          new: /openni_depth_frame},
+            {old: /openni_depth_optical_frame,  new: /openni_depth_optical_frame}
+          ]

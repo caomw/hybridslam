@@ -1,0 +1,29 @@
+<launch>
+
+    <!--------------------------------- Arguments --------------------------------->
+    
+    <arg name="disable_logging"  />
+    <arg name="record_pioneer" />
+
+    <!---------------------------------   Nodes   --------------------------------->
+
+    <!-- TO DO: Fix TF prefix somehow... Maybe I'll have to push down the robot arg -->
+
+	<!-- Pioneer robot driver p2os -->
+	<node pkg="p2os_driver" type="p2os_driver" name="p2os">
+		<rosparam file="$(find hybridslam)/config/hardware/robot/p2os.yaml" command="load" />
+		<param name="tf_prefix" type="str" value="/robot" />
+	</node>
+	
+	<!-- Turn on the robot (p2os_dashboard is not working) -->
+	<node pkg="rostopic" type="rostopic" name="p2os_enable" args="pub /robot/cmd_motor_state p2os_driver/MotorState 1" />
+
+    <!---------------------------------  Logging  --------------------------------->
+
+    <group if="$(arg record_pioneer)">
+        <node pkg="rosbag" type="record" name="rosbag_record_pioneer"
+             args="-o /tmp/hybridslam-pioneer ???"
+             unless="$(arg disable_logging)" />
+    </group>
+
+</launch>

@@ -1,0 +1,23 @@
+<launch>
+
+    <!--------------------------------- Arguments --------------------------------->
+    
+    <arg name="disable_logging"  />
+    <arg name="record_videre_stereo" />
+
+    <!---------------------------------   Nodes   --------------------------------->
+
+    <!-- Videre STHDCSG-VAR-C stereo camera driver -->
+    <node pkg="videre_camera" type="videre_camera" name="stereo" ns="stereo">
+	    <rosparam file="$(find hybridslam)/config/hardware/sensors/stereo.yaml" command="load" />
+    </node>
+
+    <!---------------------------------  Logging  --------------------------------->
+
+    <group if="$(arg record_videre_stereo)">
+        <node pkg="rosbag" type="record" name="rosbag_record_videre_stereo"
+             args="-o /tmp/hybridslam-videre-stereo ???"
+             unless="$(arg disable_logging)" />
+    </group>
+
+</launch>

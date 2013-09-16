@@ -1,0 +1,27 @@
+<launch>
+
+    <!--------------------------------- Arguments --------------------------------->
+    
+    <arg name="disable_logging"        />
+    <arg name="record_pioneer"         />
+    <arg name="record_videre_stereo"   />
+    <arg name="record_unibrain_camera" />
+
+    <!--------------------------------- Launch Files --------------------------------->
+
+    <include file="$(find hybridslam)/launch/hardware/core/pioneer.launch">
+        <arg name="disable_logging"        value="$(arg disable_logging)"        />
+        <arg name="record_pioneer"         value="$(arg record_pioneer)"         />
+    </include>
+
+    <include file="$(find hybridslam)/launch/hardware/sensors/videre_stereo.launch">
+        <arg name="disable_logging"        value="$(arg disable_logging)"        />
+        <arg name="record_videre_stereo"   value="$(arg record_videre_stereo)"   />
+    </include>
+
+    <include file="$(find hybridslam)/launch/hardware/sensors/unibrain_camera.launch">
+        <arg name="disable_logging"        value="$(arg disable_logging)"        />
+        <arg name="record_unibrain_camera" value="$(arg record_unibrain_camera)" />
+    </include>
+
+</launch>
