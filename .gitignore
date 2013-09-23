@@ -14,3 +14,31 @@
 
 # Bag files and datasets
 /data/rgbd_dataset/datasets/*
+
+# Stuff that isn't ready yet
+/include/Filter/*
+/include/MapManager/*
+/include/MeasurementModel/*
+/include/ProcessModel/*
+/include/SensorProcessor/*
+/include/Visualizer/*
+
+/src/Filter/*
+/src/MapManager/*
+/src/MeasurementModel/*
+/src/ProcessModel/*
+/src/SensorProcessor/*
+/src/Visualizer/*
+
+/test/Filter/*
+/test/MapManager/*
+/test/MeasurementModel/*
+/test/ProcessModel/*
+/test/SensorProcessor/*
+/test/Visualizer/*
+/test/CMakeLists.txt
+/test/test_doxygen.cpp
+/test/test_gtest.cpp
+
+/docs/CMakeLists.txt
+/docs/Doxyfile.in

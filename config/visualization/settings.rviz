@@ -142,12 +142,6 @@ Visualization Manager:
     Fixed Frame: /world
   Name: root
   Tools:
-    - Class: rviz/Interact
-      Hide Inactive Objects: true
-    - Class: rviz/SetGoal
-      Topic: /Pioneer3AT/move_base_simple/goal
-    - Class: rviz/SetInitialPose
-      Topic: /Pioneer3AT/initialpose
   Value: true
   Views:
     Current:
@@ -163,31 +157,6 @@ Visualization Manager:
       Target Frame: <Fixed Frame>
       Value: XYOrbit (rviz)
       Yaw: 0.785398
-    Saved:
-      - Class: rviz/Orbit
-        Distance: 11.7944
-        Focal Point:
-          X: -0.341046
-          Y: -0.117971
-          Z: 0.978239
-        Name: Follower
-        Near Clip Distance: 0.01
-        Pitch: 1.5698
-        Target Frame: /Pioneer3AT/base_link
-        Value: Orbit (rviz)
-        Yaw: 4.70541
-      - Class: rviz/Orbit
-        Distance: 11.7944
-        Focal Point:
-          X: -9.27203
-          Y: 17.9489
-          Z: 0.978223
-        Name: Map
-        Near Clip Distance: 0.01
-        Pitch: 1.5698
-        Target Frame: /Pioneer3AT/map
-        Value: Orbit (rviz)
-        Yaw: 4.70541
 Window Geometry:
   Displays:
     collapsed: false
