@@ -140,6 +140,7 @@
             <rosparam command="load" file="$(find hybridslam)/config/playback/rgbd_dataset_pioneer_mappings.yaml" />
         </node>-->
         
+        <!--rosbag play ++clock src/hybridslam/data/rgbd_dataset/datasets/rgbd_dataset_freiburg2_pioneer_360.bag-->
         <node pkg="rosbag" type="play" name="rosbag_playback" args="--clock $(find hybridslam)/data/$(arg playback_rosbag)">
             <!--<remap from="/tf" to="/old_tf" />-->
         </node>
@@ -148,12 +149,19 @@
 
     <include file="$(find hybridslam)/launch/hybridslam_visualization.launch" unless="$(arg disable_visualization)" />
 
+    <!-- Convert depth images to a point cloud -->
+    <node pkg="nodelet" type="nodelet" args="manager" name="depth_image_proc_nodelet_manager" output="screen" />
+
+    <node pkg="nodelet" type="nodelet" name="cloudify" args="load depth_image_proc/point_cloud_xyzrgb depth_image_proc_nodelet_manager --no-bond">
+        <remap from="depth_registered/image_rect" to="camera/depth/image" />
+        <remap from="depth_registered/points"     to="camera/depth_registered/points" />
+        <remap from="rgb/image_rect_color"        to="camera/rgb/image_color" />
+        <remap from="rgb/camera_info"             to="camera/rgb/camera_info" />
+    </node>
+
     <node pkg="hybridslam" type="sensor_processor" name="hybridslam_sensor_processor" output="screen">
-        <remap from="pose"            to="/pose" />
-        <remap from="rgb/image_color" to="/camera/rgb/image_color" />
-        <remap from="rgb/camera_info" to="/camera/rgb/camera_info" />
-        <remap from="depth/image"     to="/camera/depth/image" />
-        <remap from="depth/disparity" to="/camera/depth/disparity" />
+        <remap from="odometry"     to="pose" />
+        <remap from="kinect_cloud" to="camera/depth_registered/points" />
     </node>
 
     <!--<node pkg="rosbag" type="record" name="rosbag_record_diag"

@@ -20,14 +20,14 @@
 /include/MapManager/*
 /include/MeasurementModel/*
 /include/ProcessModel/*
-/include/SensorProcessor/*
+#/include/SensorProcessor/*
 /include/Visualizer/*
 
 /src/Filter/*
 /src/MapManager/*
 /src/MeasurementModel/*
 /src/ProcessModel/*
-/src/SensorProcessor/*
+#/src/SensorProcessor/*
 /src/Visualizer/*
 
 /test/Filter/*

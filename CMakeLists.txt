@@ -4,11 +4,12 @@ project(hybridslam)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp rospy pcl_ros sensor_msgs std_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy cv_bridge pcl_ros sensor_msgs std_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 find_package(PCL REQUIRED)
+find_package(OpenCV REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -63,7 +64,9 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS} 
+  ${PCL_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -84,7 +87,7 @@ include_directories(
 # )
 
 add_executable(sensor_processor src/SensorProcessor/SensorProcessor.cpp)
-target_link_libraries(sensor_processor ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(sensor_processor ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
 
 #############
 ## Install ##
