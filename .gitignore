@@ -17,14 +17,14 @@
 
 # Stuff that isn't ready yet
 /include/Filter/*
-/include/MapManager/*
+#/include/MapManager/*
 /include/MeasurementModel/*
 /include/ProcessModel/*
 #/include/SensorProcessor/*
 /include/Visualizer/*
 
 /src/Filter/*
-/src/MapManager/*
+#/src/MapManager/*
 /src/MeasurementModel/*
 /src/ProcessModel/*
 #/src/SensorProcessor/*
