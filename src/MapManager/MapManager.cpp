@@ -201,6 +201,7 @@ void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr& kcloud_msg, const sensor
 
     ROS_INFO("# poses: %ld", poses.size());
     ROS_INFO("# clouds: %ld", clouds.size());
+    ROS_INFO("# feature cloud points: %d", fwidth * fheight);
 
     loaded_clouds++;
 

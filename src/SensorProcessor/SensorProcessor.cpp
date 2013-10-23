@@ -1,42 +1,10 @@
-#include <ros/ros.h>
-
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
-#include <nav_msgs/Odometry.h>
-#include <sensor_msgs/Image.h>
-#include <sensor_msgs/CameraInfo.h>
-#include <sensor_msgs/PointCloud2.h>
-
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
-
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/features2d/features2d.hpp>
-#include <opencv2/nonfree/features2d.hpp>
-
-#include <cv_bridge/cv_bridge.h>
-
-#include <pcl/filters/extract_indices.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-#include <pcl/ros/conversions.h>
-
-#include <pcl_conversions/pcl_conversions.h>
-
-#include <tf/transform_datatypes.h>
-
-#include <iostream>
+#include <SensorProcessor/SensorProcessor.h>
 
 bool print_msgs = false;
-bool display_features = false;
+bool display_features = true;
 
-void odom_cb(const nav_msgs::Odometry::ConstPtr& odom_msg);
-void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
-
-ros::Publisher pub_pose;
 ros::Publisher pub_cloud;
+ros::Publisher pub_pose; // TODO: remove this when filter is running
 
 int main (int argc, char** argv)
 {
@@ -45,80 +13,58 @@ int main (int argc, char** argv)
     ros::NodeHandle nh;
 
     // Create ROS subscribers for sensor data
-    ros::Subscriber sub_odom  = nh.subscribe ("odometry",     1, odom_cb);
     ros::Subscriber sub_cloud = nh.subscribe ("kinect_cloud", 1, cloud_cb);
 
     // Create a ROS publisher for processed sensor data
-    pub_pose = nh.advertise<geometry_msgs::PoseWithCovarianceStamped> ("estimated_pose", 1);
     pub_cloud = nh.advertise<sensor_msgs::PointCloud2> ("feature_cloud", 1);
 
+    // Create a CV window for debugging
     if(display_features)
         cv::namedWindow("Display window", CV_WINDOW_AUTOSIZE);
+
+    // TODO: remove this when filter is running
+    ros::Subscriber sub_odom  = nh.subscribe ("odometry", 1, odom_cb);
+    pub_pose = nh.advertise<geometry_msgs::PoseWithCovarianceStamped> ("estimated_pose", 1);
 
     // Spin
     ros::spin ();
 }
 
-void odom_cb(const nav_msgs::Odometry::ConstPtr& odom_msg)
-{
-    int seq = odom_msg->header.seq;
-    int time_sec = odom_msg->header.stamp.sec;
-    int time_nsec = odom_msg->header.stamp.nsec;
-    double x = odom_msg->pose.pose.position.x;
-    double y = odom_msg->pose.pose.position.y;
-    double qx = odom_msg->pose.pose.orientation.x;
-    double qy = odom_msg->pose.pose.orientation.y;
-    double qz = odom_msg->pose.pose.orientation.z;
-    double qw = odom_msg->pose.pose.orientation.w;
-    double th = (180/M_PI)*tf::getYaw(tf::Quaternion(qx,qy,qz,qw));
-    double v = odom_msg->twist.twist.linear.x;
-    double w = odom_msg->twist.twist.angular.z;
-
-    if(print_msgs)
-    {
-        ROS_INFO("Odometry Data\n");
-        ROS_INFO("seq: %d", seq);
-        ROS_INFO("timestamp: %d.%d", time_sec, time_nsec);
-        ROS_INFO("x: %lf", x);
-        ROS_INFO("y: %lf", y);
-        ROS_INFO("th: %lf (q: %lf %lf %lf %lf)", th, qx, qy, qz, qw);
-        ROS_INFO("v: %lf", v);
-        ROS_INFO("w: %lf", w);
-        ROS_INFO("------------------------------------------------------");
-    }
-
-    // Should I be publishing this to the filter?
-    // Update with odometry:
-    // x = x + delta_trans*cos(th+delta_rot1)
-    // y = y + delta_trans*sin(th+delta_rot1)
-    // th = th + delta_rot1 + delta_rot2
-    // Need to work out the math for covariance update
-    /*static double x_old = 0;
-    static double y_old = 0;
-    static double th_old = 0;
-
-    double dx = x-x_old;
-    double dy = y-y_old;
-    double dth = th-th_old;
-
-    double delta_rot1 = atan2(dy, dx)-th_old; 
-    double delta_trans = sqrt(dx*dx+dy*dy);
-    double delta_rot2 = dth-delta_rot1;
-
-    x_old = x;
-    y_old = y;
-    th_old = th;*/
-
-    // Fake pose estimate
-    geometry_msgs::PoseWithCovarianceStamped::Ptr output(new geometry_msgs::PoseWithCovarianceStamped);
-    output->header = odom_msg->header;
-    output->pose = odom_msg->pose;
-    
-    pub_pose.publish(output);
-}
-
 void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
 {
+    // Print cloud message
+    if(print_msgs)
+        print_cloud_msg(cloud_msg);
+
+    // Extract RGB image from cloud
+    cv::Mat img;
+    extract_rgb_image(cloud_msg, img);
+
+    // Detect keypoints from RGB image
+    std::vector<cv::KeyPoint> keypoints;
+    extract_keypoints(img, keypoints);
+
+    // Build feature cloud from keypoints
+    sensor_msgs::PointCloud2::Ptr feature_cloud_msg(new sensor_msgs::PointCloud2);
+    build_feature_cloud(keypoints, cloud_msg, feature_cloud_msg);
+
+    // Publish the data
+    pub_cloud.publish(feature_cloud_msg);
+}
+
+void odom_cb(const nav_msgs::Odometry::ConstPtr& odom_msg)
+{
+    // Fake pose estimate from odometry
+    geometry_msgs::PoseWithCovarianceStamped::Ptr estimated_pose_msg(new geometry_msgs::PoseWithCovarianceStamped);
+    estimated_pose_msg->header = odom_msg->header;
+    estimated_pose_msg->pose = odom_msg->pose;
+    
+    pub_pose.publish(estimated_pose_msg);
+}
+
+void print_cloud_msg(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
+{
+    // Parse cloud message
     int seq = cloud_msg->header.seq;
     int time_sec = cloud_msg->header.stamp.sec;
     int time_nsec = cloud_msg->header.stamp.nsec;
@@ -130,41 +76,47 @@ void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
     int row_step = cloud_msg->row_step;
     bool is_dense = cloud_msg->is_dense;
 
-    if(print_msgs)
-    {
-        ROS_INFO("Point cloud\n");
-        ROS_INFO("seq: %d", seq);
-        ROS_INFO("timestamp: %d.%d", time_sec, time_nsec);
-        ROS_INFO("frame_id: %s", frame_id.c_str());
-        ROS_INFO("dimensions: %dx%d", width, height);
-        ROS_INFO("is_bigendian: %d", is_bigendian);
-        ROS_INFO("point_step: %d\n", point_step);
-        ROS_INFO("row_step: %d\n", row_step);
-        ROS_INFO("is_dense: %d\n", is_dense);
-        ROS_INFO("------------------------------------------------------");
-    }
+    // Print cloud message for debugging
+    ROS_INFO("Point cloud\n");
+    ROS_INFO("seq: %d", seq);
+    ROS_INFO("timestamp: %d.%d", time_sec, time_nsec);
+    ROS_INFO("frame_id: %s", frame_id.c_str());
+    ROS_INFO("dimensions: %dx%d", width, height);
+    ROS_INFO("is_bigendian: %d", is_bigendian);
+    ROS_INFO("point_step: %d\n", point_step);
+    ROS_INFO("row_step: %d\n", row_step);
+    ROS_INFO("is_dense: %d\n", is_dense);
+    ROS_INFO("------------------------------------------------------");
+}
 
-    // Extract RGB image from cloud
+void extract_rgb_image(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg, cv::Mat& img)
+{
+    // Copy the RGB fields of a sensor_msgs::PointCloud2 into a sensor_msgs::Image
     sensor_msgs::Image image_msg;
-    cv_bridge::CvImagePtr cv_image_ptr;
-    cv::Mat img;
-
     pcl::toROSMsg(*cloud_msg, image_msg);
-    cv_image_ptr = cv_bridge::toCvCopy(image_msg);
-    img = cv_image_ptr->image;
 
-    // Detect the keypoints using SURF Detector
-    std::vector<cv::KeyPoint> keypoints;
+    // Convert a sensor_msgs::Image to an OpenCV-compatible CvImage, copying the image data.
+    cv_bridge::CvImagePtr cv_image_ptr;
+    cv_image_ptr = cv_bridge::toCvCopy(image_msg);
+
+    // Assign cv::Mat portion of CvImage to output
+    img = cv_image_ptr->image;
+}
+
+void extract_keypoints(cv::Mat& img, std::vector<cv::KeyPoint>& keypoints)
+{
+    // Extract SURF keypoints
     int minHessian = 400;
 
     cv::SurfFeatureDetector detector(minHessian);
     detector.detect(img, keypoints);
 
-    // Print out number of features
-    ROS_INFO("# features: %ld", keypoints.size());
-
+    // Display detected keypoints
     if(display_features)
     {
+        // Print out number of features
+        //ROS_INFO("# features: %ld", keypoints.size());
+
         // Overlay keypoints on image
         cv::drawKeypoints(img, keypoints, img, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT);
       
@@ -172,35 +124,39 @@ void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
         cv::imshow("Display window", img);
         cv::waitKey(10);
     }
+}
 
-    // Build feature cloud
+void build_feature_cloud(const std::vector<cv::KeyPoint>& keypoints, const sensor_msgs::PointCloud2::ConstPtr& cloud_msg, sensor_msgs::PointCloud2::Ptr& feature_cloud_msg)
+{
+    // Work with PCL compatible variables
+    pcl::PointIndices::Ptr keypoint_indices(new pcl::PointIndices());
     pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
     pcl::PCLPointCloud2::Ptr pcl_output(new pcl::PCLPointCloud2);
 
-    pcl::PointIndices::Ptr keypoint_indices (new pcl::PointIndices());
-    pcl::ExtractIndices<pcl::PCLPointCloud2> extract;
-
-    pcl_conversions::toPCL(*cloud_msg, *pcl_input);
-
+    // Convert keypoints to PCL format
     for(int i=0; i < keypoints.size(); i++)
     {
         int x = keypoints[i].pt.x;//1-640
         int y = keypoints[i].pt.y;//1-480
 
-        keypoint_indices->indices.push_back(width*y+x);
+        keypoint_indices->indices.push_back(cloud_msg->width*y+x);
     }
+
+    // Convert cloud_msg to PCL format
+    pcl_conversions::toPCL(*cloud_msg, *pcl_input);
+
+    // Use ExtractIndices filter to build feature cloud
+    pcl::ExtractIndices<pcl::PCLPointCloud2> extract;   
 
     extract.setInputCloud(pcl_input);
     extract.setIndices(keypoint_indices);
     extract.setNegative(false);
     extract.filter(*pcl_output);
 
-    ROS_INFO("# feature cloud points: %d", pcl_output->width * pcl_output->height);
+    // Convert pcl_output to ROS format
+    pcl_conversions::fromPCL(*pcl_output, *feature_cloud_msg);
 
-    // Publish the data
-    sensor_msgs::PointCloud2::Ptr output(new sensor_msgs::PointCloud2);
-    
-    pcl_conversions::fromPCL(*pcl_output, *output);
-
-    pub_cloud.publish (output);
+    // Print out number of features for debugging
+    if(display_features)
+        ROS_INFO("# feature cloud points: %d", pcl_output->width * pcl_output->height);
 }
