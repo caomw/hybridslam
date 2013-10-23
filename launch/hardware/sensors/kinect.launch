@@ -1,23 +1,23 @@
 <launch>
 
-    <!--------------------------------- Arguments --------------------------------->
+    <!--******************************* Arguments *******************************-->
     
     <arg name="disable_logging"  />
     <arg name="record_kinect" />
 
-    <!---------------------------------   Nodes   --------------------------------->
+    <!--*******************************   Nodes   *******************************-->
 
     <!-- Kinect sensor driver OpenNI -->
     <include file="$(find openni_launch)/launch/openni.launch">
         <arg name="camera" value="kinect" />
     </include>
 
-    <!---------------------------------  Logging  --------------------------------->
+    <!--*******************************  Logging  *******************************-->
 
-    <group if="$(arg record_kinect)">
+    <!--<group if="$(arg record_kinect)">
         <node pkg="rosbag" type="record" name="rosbag_record_kinect"
              args="-o /tmp/hybridslam-kinect ???"
              unless="$(arg disable_logging)" />
-    </group>
+    </group>-->
 
 </launch>

@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
@@ -34,6 +35,7 @@ bool display_features = false;
 void odom_cb(const nav_msgs::Odometry::ConstPtr& odom_msg);
 void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
 
+ros::Publisher pub_pose;
 ros::Publisher pub_cloud;
 
 int main (int argc, char** argv)
@@ -47,6 +49,7 @@ int main (int argc, char** argv)
     ros::Subscriber sub_cloud = nh.subscribe ("kinect_cloud", 1, cloud_cb);
 
     // Create a ROS publisher for processed sensor data
+    pub_pose = nh.advertise<geometry_msgs::PoseWithCovarianceStamped> ("estimated_pose", 1);
     pub_cloud = nh.advertise<sensor_msgs::PointCloud2> ("feature_cloud", 1);
 
     if(display_features)
@@ -105,6 +108,13 @@ void odom_cb(const nav_msgs::Odometry::ConstPtr& odom_msg)
     x_old = x;
     y_old = y;
     th_old = th;*/
+
+    // Fake pose estimate
+    geometry_msgs::PoseWithCovarianceStamped::Ptr output(new geometry_msgs::PoseWithCovarianceStamped);
+    output->header = odom_msg->header;
+    output->pose = odom_msg->pose;
+    
+    pub_pose.publish(output);
 }
 
 void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)

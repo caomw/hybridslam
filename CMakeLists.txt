@@ -89,6 +89,9 @@ include_directories(
 add_executable(sensor_processor src/SensorProcessor/SensorProcessor.cpp)
 target_link_libraries(sensor_processor ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
 
+add_executable(map_manager src/MapManager/MapManager.cpp)
+target_link_libraries(map_manager ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
+
 add_executable(cloud_saver src/Utilities/CloudSaver.cpp)
 target_link_libraries(cloud_saver ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
 

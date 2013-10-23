@@ -30,10 +30,10 @@
     <param name="use_sim_time" value="$(arg use_sim_time)" />
 
     <!-- Set namespace according to choices above -->
-    <group if="$(arg robot_desktop)">      <arg name="robot" value="desktop" /> </group>
+    <!--<group if="$(arg robot_desktop)">      <arg name="robot" value="desktop" /> </group>
     <group if="$(arg robot_aramis)" >      <arg name="robot" value="aramis"  /> </group>
     <group if="$(arg robot_athos)"  >      <arg name="robot" value="athos"   /> </group>
-    <group if="$(arg robot_porthos)">      <arg name="robot" value="porthos" /> </group>
+    <group if="$(arg robot_porthos)">      <arg name="robot" value="porthos" /> </group>-->
 
     <!-- What auxiliary parts of the system do we want to disable? -->
     <arg name="disable_control"       default="false" /> 
@@ -68,7 +68,7 @@
                 <group unless="$(arg robot_aramis)">
                 <group unless="$(arg robot_athos)">
                 <group unless="$(arg robot_porthos)">
-                    <include file="$(find hybridslam)/launch/robots/desktop.launch)" ns="$(arg robot)">
+                    <include file="$(find hybridslam)/launch/robots/desktop.launch" ns="$(arg robot)">
                         <arg name="disable_logging" value="$(arg disable_logging)" />
                         <arg name="record_kinect"   value="$(arg record_kinect)"   />
                     </include>
@@ -81,7 +81,7 @@
                 <group unless="$(arg robot_desktop)">
                 <group unless="$(arg robot_athos)">
                 <group unless="$(arg robot_porthos)">
-                    <include file="$(find hybridslam)/launch/robots/aramis.launch)" ns="$(arg robot)">
+                    <include file="$(find hybridslam)/launch/robots/aramis.launch" ns="$(arg robot)">
                         <arg name="disable_logging"      value="$(arg disable_logging)"      />
                         <arg name="record_pioneer"       value="$(arg record_pioneer)"       />
                         <arg name="record_kinect"        value="$(arg record_kinect)"        />
@@ -96,7 +96,7 @@
                 <group unless="$(arg robot_desktop)">
                 <group unless="$(arg robot_aramis)">
                 <group unless="$(arg robot_porthos)">
-                    <include file="$(find hybridslam)/launch/robots/athos.launch)" ns="$(arg robot)">
+                    <include file="$(find hybridslam)/launch/robots/athos.launch" ns="$(arg robot)">
                         <arg name="disable_logging"        value="$(arg disable_logging)"        />
                         <arg name="record_pioneer"         value="$(arg record_pioneer)"         />
                         <arg name="record_videre_stereo"   value="$(arg record_videre_stereo)"   />
@@ -111,7 +111,7 @@
                 <group unless="$(arg robot_desktop)">
                 <group unless="$(arg robot_aramis)">
                 <group unless="$(arg robot_athos)">
-                    <include file="$(find hybridslam)/launch/robots/porthos.launch)" ns="$(arg robot)">
+                    <include file="$(find hybridslam)/launch/robots/porthos.launch" ns="$(arg robot)">
                         <arg name="disable_logging"            value="$(arg disable_logging)"            />
                         <arg name="record_pioneer"             value="$(arg record_pioneer)"             />
                         <arg name="record_cyton_arm"           value="$(arg record_cyton_arm)"           />
@@ -162,6 +162,8 @@
     <node pkg="hybridslam" type="sensor_processor" name="hybridslam_sensor_processor" output="screen">
         <remap from="odometry"     to="pose" />
         <remap from="kinect_cloud" to="camera/depth_registered/points" />
+        <!--<remap from="odometry"     to="$(arg robot)/pose" />
+        <remap from="kinect_cloud" to="$(arg robot)/kinect/depth_registered/points" />-->
     </node>
 
     <!--<node pkg="rosbag" type="record" name="rosbag_record_diag"
