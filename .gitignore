@@ -18,27 +18,19 @@
 # Stuff that isn't ready yet
 /include/Filter/*
 #/include/MapManager/*
-/include/MeasurementModel/*
-/include/ProcessModel/*
+/include/Model/*
 #/include/SensorProcessor/*
-/include/Visualizer/*
+/include/StateEstimator/*
+/include/Types/*
 
-/src/Filter/*
+/src/Filter
 #/src/MapManager/*
-/src/MeasurementModel/*
-/src/ProcessModel/*
+/src/Model/*
 #/src/SensorProcessor/*
-/src/Visualizer/*
+/src/StateEstimator/*
+/src/Utilities/*
 
-/test/Filter/*
-/test/MapManager/*
-/test/MeasurementModel/*
-/test/ProcessModel/*
-/test/SensorProcessor/*
-/test/Visualizer/*
-/test/CMakeLists.txt
-/test/test_doxygen.cpp
-/test/test_gtest.cpp
+/TO DO/*
 
 /docs/CMakeLists.txt
 /docs/Doxyfile.in
