@@ -16,20 +16,26 @@
 /data/rgbd_dataset/datasets/*
 
 # Stuff that isn't ready yet
-/include/Filter/*
+#/include/Filter/*
 #/include/MapManager/*
-/include/Model/*
+#/include/Model/*
 #/include/SensorProcessor/*
 /include/StateEstimator/*
 /include/Types/*
 
-/src/Filter
+#/src/Filter
 #/src/MapManager/*
-/src/Model/*
+#/src/Model/*
 #/src/SensorProcessor/*
 /src/StateEstimator/*
 /src/Utilities/*
 
+/include/Filter/TO DO
+/include/Model/Measurement/TO DO
+/include/Model/Motion/TO DO
+/src/Filter/TO DO
+/src/Model/Measurement/TO DO
+/src/Model/Motion/TO DO
 /TO DO/*
 
 /docs/CMakeLists.txt
