@@ -26,12 +26,12 @@ class Filter
 		}
 
 		// Use motion model to update state vector
-		void prediction_step(Vector u);
+		bool prediction_step(Vector u, double dt);
 
 		// Use measurement model to update state vector
-		void correction_step(Vector z);
+		bool correction_step(Vector z, double dt);
 
-		const State& state();
+		const State& state()
 		{
 			return state_;
 		}
