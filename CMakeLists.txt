@@ -87,14 +87,17 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(sensor_processor src/SensorProcessor/SensorProcessor.cpp)
-target_link_libraries(sensor_processor ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
+add_executable(hs_sensor_processor src/SensorProcessor/SensorProcessor.cpp)
+target_link_libraries(hs_sensor_processor ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
 
-add_executable(map_manager src/MapManager/MapManager.cpp)
-target_link_libraries(map_manager ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
+add_executable(hs_map_manager src/MapManager/MapManager.cpp)
+target_link_libraries(hs_map_manager ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
 
-add_executable(cloud_saver src/Utilities/CloudSaver.cpp)
-target_link_libraries(cloud_saver ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
+add_executable(hs_state_estimator src/StateEstimator/StateEstimator.cpp src/Filter/Filter.cpp src/Model/Motion/MotionModel.cpp src/Model/Measurement/MeasurementModel.cpp)
+target_link_libraries(hs_state_estimator ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
+
+add_executable(hs_cloud_saver src/Utilities/CloudSaver.cpp)
+target_link_libraries(hs_cloud_saver ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
 
 #############
 ## Install ##

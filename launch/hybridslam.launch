@@ -159,7 +159,7 @@
         <remap from="rgb/camera_info"             to="camera/rgb/camera_info" />
     </node>
 
-    <node pkg="hybridslam" type="sensor_processor" name="hybridslam_sensor_processor" output="screen">
+    <node pkg="hybridslam" type="hs_sensor_processor" name="hybridslam_sensor_processor" output="screen">
         <remap from="odometry"     to="pose" />
         <remap from="kinect_cloud" to="camera/depth_registered/points" />
         <!--<remap from="odometry"     to="$(arg robot)/pose" />

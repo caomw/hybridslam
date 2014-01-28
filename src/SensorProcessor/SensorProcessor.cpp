@@ -1,3 +1,15 @@
+/**
+ * @file   SensorProcessor.cpp
+ * @author George Andrew Brindeiro (georgebrindeiro@lara.unb.br)
+ * @date   Dec 10, 2013
+ *
+ * @ingroup ros-nodes
+ *
+ * @attention Copyright (C) 2013
+ * @attention Laboratório de Automação e Robótica (LARA)
+ * @attention Universidade de Brasília (UnB)
+ */
+
 #include <SensorProcessor/SensorProcessor.h>
 
 bool print_msgs = false;
@@ -9,7 +21,7 @@ ros::Publisher pub_pose; // TODO: remove this when filter is running
 int main (int argc, char** argv)
 {
     // Initialize ROS
-    ros::init (argc, argv, "hybridslam_sensor_processor");
+    ros::init (argc, argv, "hs_sensor_processor");
     ros::NodeHandle nh;
 
     // Create ROS subscribers for sensor data

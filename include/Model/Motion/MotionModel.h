@@ -1,4 +1,20 @@
+/**
+ * @file   MotionModel.h
+ * @author George Andrew Brindeiro (georgebrindeiro@lara.unb.br)
+ * @date   Nov 12, 2013
+ *
+ * @ingroup models
+ *
+ * @attention Copyright (C) 2013
+ * @attention Laboratório de Automação e Robótica (LARA)
+ * @attention Universidade de Brasília (UnB)
+ */
+
 #include <Types/Typedefs.h>
+
+#include <nav_msgs/Odometry.h>
+
+#include <cstdio>
 
 class MotionModel
 {
@@ -10,10 +26,10 @@ class MotionModel
 			a3_ = a3;
 			a4_ = a4;
 
-			odom_init = false;
+			odom_init_ = false;
 		}
 
-		bool preprocess(Vector x, Vector u);
+		bool preprocess(Vector x, const nav_msgs::Odometry::ConstPtr& u_msg/*Vector u*/);
 
 		Vector f();
 
@@ -22,6 +38,16 @@ class MotionModel
 		Matrix Fu();
 
 		Matrix Su();
+
+		bool preprocess_new(Vector x, const nav_msgs::Odometry::ConstPtr& u_msg/*Vector u*/);
+
+		Vector f_new();
+
+		Matrix Fx_new();
+
+		Matrix Fu_new();
+
+		Matrix Su_new();
 
 	private:
 		double a1_;
@@ -50,4 +76,16 @@ class MotionModel
 		double dr1_;
 		double dtr_;
 		double dr2_;
+
+		Vector p_hat_old_;
+		Quaternion q_hat_old_;
+
+		Vector p_bar_new_;
+		Quaternion q_bar_new_;
+
+		Vector p_bar_old_;
+		Quaternion q_bar_old_;
+
+		Vector dp_bar_;
+		Quaternion dq_bar_;
 };

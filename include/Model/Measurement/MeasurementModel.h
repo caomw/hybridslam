@@ -1,15 +1,18 @@
 #include <Types/Typedefs.h>
 
+#include <sensor_msgs/PointCloud2.h>
+
 class MeasurementModel
 {
 	public:
 		MeasurementModel()
 		{
+			m_ = 0;
 		}
 
-		bool preprocess(Vector x, Vector u);
+		bool preprocess(Vector x, const sensor_msgs::PointCloud2::ConstPtr& z_msg/*Vector z*/);
 
-		Vector h();
+		Vector dz();
 
 		Matrix Hx();
 
@@ -17,4 +20,10 @@ class MeasurementModel
 
 	private:
 
+		int m_;
+		int n_;
+
+		Vector dz_;
+
+		Matrix Sz_;
 };

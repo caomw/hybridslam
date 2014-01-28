@@ -1,3 +1,15 @@
+/**
+ * @file   SensorProcessor.h
+ * @author George Andrew Brindeiro (georgebrindeiro@lara.unb.br)
+ * @date   Dec 10, 2013
+ *
+ * @ingroup ros-nodes
+ *
+ * @attention Copyright (C) 2013
+ * @attention Laboratório de Automação e Robótica (LARA)
+ * @attention Universidade de Brasília (UnB)
+ */
+
 #include <ros/ros.h>
 
 #include <sensor_msgs/Image.h>
